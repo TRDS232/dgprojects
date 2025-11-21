@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Open_Sans, Poppins } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
 const openSans = Open_Sans({
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/2.png",
   },
-    generator: 'v0.app'
+  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -33,7 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${openSans.variable} ${poppins.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
