@@ -111,7 +111,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
               <div className="space-y-4">
                 <div className="transform transition-all duration-300 hover:translate-x-2">
                   <p className="text-gray-300 font-semibold">Email</p>
-                  <a href="mailto:contact@najdesign.com" className="text-white hover:text-gray-200 transition-colors">
+                  <a href="mailto:hidalgodanlevy@gmail.com" className="text-white hover:text-gray-200 transition-colors">
                     hidalgodanlevy@gmail.com
                   </a>
                 </div>

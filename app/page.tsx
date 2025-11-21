@@ -457,7 +457,7 @@ const handleContactClick = () => {
             <p className="text-gray-400 text-xs sm:text-sm mb-4">Get in touch</p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 flex-wrap">
               <a
-                href="mailto:contact@najdesign.com"
+                href="mailto:hidalgodanlevy@gmail.com"
                 className="flex items-center gap-2 text-[#A94D4D] hover:text-[#8B3A3A] transition-colors text-sm"
               >
                 <Mail className="w-4 h-4" />
