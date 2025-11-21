@@ -117,7 +117,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 </div>
                 <div className="transform transition-all duration-300 hover:translate-x-2">
                   <p className="text-gray-300 font-semibold">Phone</p>
-                  <a href="tel:+33612345678" className="text-white hover:text-gray-200 transition-colors">
+                  <a href="tel:+50364247347" className="text-white hover:text-gray-200 transition-colors">
                     +503 6424-7347
                   </a>
                 </div>
