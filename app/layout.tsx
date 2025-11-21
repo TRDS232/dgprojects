@@ -19,7 +19,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "DG PROJECTS | Web & Software Development",
-  description: "Portfolio de design graphique spécialisé dans la création de logos",
+  description: "Web & Software Development",
   icons: {
     icon: "/images/2.png",
   },

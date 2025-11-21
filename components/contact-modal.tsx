@@ -155,7 +155,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
             style={{ transitionDelay: "1s" }}
           >
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} NAJ DESIGN. Looking forward to collaborating with you!
+              © {new Date().getFullYear()} DG PROJECTS | Web & Software Development
             </p>
           </div>
         </div>
