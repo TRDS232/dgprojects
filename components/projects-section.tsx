@@ -47,9 +47,9 @@ export default function ProjectsSection() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-4 reveal-block">
           <div>
-            <p className="text-[#A94D4D] text-sm tracking-[0.3em] uppercase mb-3 font-open-sans">Selected work</p>
+            <p className="text-[#A94D4D] text-sm tracking-[0.3em] uppercase mb-3 font-open-sans">SELECTED CLIENT WORK</p>
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white font-poppins leading-none">
-              My Projects
+              Client Projects
             </h2>
           </div>
           <div className="w-20 h-px bg-gradient-to-r from-[#8B3A3A] to-transparent sm:mb-3" />
