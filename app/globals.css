@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ──────────────────────────────── */
+:root {
+  --dg-bg:            #07070e;
+  --dg-surface:       #0c0c18;
+  --dg-surface-2:     #101024;
+  --dg-border:        rgba(255, 255, 255, 0.07);
+  --dg-border-hover:  rgba(255, 255, 255, 0.12);
+  --dg-text-1:        #f0f0ec;
+  --dg-text-2:        #787890;
+  --dg-text-3:        #44445a;
+  --dg-accent:        #c72a2a;
+  --dg-accent-hover:  #d63b3b;
+  --dg-accent-dim:    rgba(199, 42, 42, 0.10);
+  --dg-accent-dim-2:  rgba(199, 42, 42, 0.18);
+
+  /* Shadcn tokens (preserved for ui/* components) */
+  --background: 240 10% 4%;
+  --foreground: 0 0% 94%;
+  --card: 240 8% 5%;
+  --card-foreground: 0 0% 94%;
+  --popover: 240 8% 5%;
+  --popover-foreground: 0 0% 94%;
+  --primary: 0 0% 94%;
+  --primary-foreground: 240 10% 4%;
+  --secondary: 240 5% 10%;
+  --secondary-foreground: 0 0% 94%;
+  --muted: 240 5% 10%;
+  --muted-foreground: 240 5% 50%;
+  --accent: 240 5% 10%;
+  --accent-foreground: 0 0% 94%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5% 14%;
+  --input: 240 5% 14%;
+  --ring: 240 5% 64%;
+  --radius: 0.5rem;
+}
+
+/* ── Base ───────────────────────────────────────── */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--dg-bg);
+  color: var(--dg-text-1);
+  font-family: var(--font-open-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: var(--font-poppins), sans-serif;
+}
+
+/* ── Scroll-reveal ──────────────────────────────── */
+.reveal-block {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity  0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-block.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hero entrance ──────────────────────────────── */
+@keyframes hero-enter {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.hero-line {
+  opacity: 0;
+  animation: hero-enter 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Marquee ────────────────────────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee-scroll 28s linear infinite;
+  will-change: transform;
+}
+
+/* ── Scroll cue line ────────────────────────────── */
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.4); }
+  50%       { opacity: 0.8; transform: scaleY(1);   }
+}
+
+.scroll-line {
+  transform-origin: top center;
+  animation: scroll-pulse 2.2s ease-in-out infinite;
+}
+
+/* ── Fade in (mobile nav) ───────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease forwards;
+}
+
+/* ── Process step bar ───────────────────────────── */
+@keyframes draw-bar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.bar-draw {
+  transform-origin: left;
+  animation: draw-bar 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Service row ────────────────────────────────── */
+.service-row {
+  border-top: 1px solid var(--dg-border);
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.service-row:last-child {
+  border-bottom: 1px solid var(--dg-border);
+}
+
+.service-row:hover {
+  border-top-color: var(--dg-border-hover);
+  background: rgba(255,255,255,0.018);
+}
+
+.service-row:last-child:hover {
+  border-bottom-color: var(--dg-border-hover);
+}
+
+/* ── Plan card ──────────────────────────────────── */
+.plan-card {
+  border: 1px solid var(--dg-border);
+  background: var(--dg-surface);
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.plan-card:hover {
+  border-color: var(--dg-border-hover);
+  transform: translateY(-2px);
+}
+
+.plan-card-featured {
+  border-color: rgba(199, 42, 42, 0.40) !important;
+  background: var(--dg-surface-2);
+}
+
+.plan-card-featured:hover {
+  border-color: rgba(199, 42, 42, 0.65) !important;
+}
