@@ -172,11 +172,39 @@ const PLANS_MAINTENANCE = [
   },
 ]
 
-const CLIENTS = [
-  { name: "TRS Logística", href: "https://www.trslogistica.com/" },
-  { name: "VIDENTAL SV", href: "https://www.vidental.sv/" },
-  { name: "Tu Dentista SV", href: "https://www.tudentistasv.com/" },
-]
+/* ── Helpers ─────────────────────────────────────────────────────── */
+
+function CountUp({ to, duration = 1000 }: { to: number; duration?: number }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLSpanElement>(null)
+  const started = useRef(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true
+          const start = performance.now()
+          const tick = (now: number) => {
+            const t = Math.min((now - start) / duration, 1)
+            const eased = 1 - Math.pow(1 - t, 3)
+            setCount(Math.round(eased * to))
+            if (t < 1) requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+          obs.disconnect()
+        }
+      },
+      { threshold: 0.5 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [to, duration])
+
+  return <span ref={ref}>{count}</span>
+}
 
 /* ── Page ──────────────────────────────────────────────────────────── */
 
@@ -428,29 +456,29 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Social proof */}
+          {/* Metrics */}
           <div
-            className="hero-line flex items-center gap-3"
+            className="hero-line flex items-center justify-center gap-10 sm:gap-16"
             style={{ animationDelay: "0.7s" }}
           >
-            <div className="flex items-center gap-1.5">
-              {CLIENTS.map((c) => (
+            {[
+              { value: 4, suffix: "+", label: "Web Projects"  },
+              { value: 3, suffix: "+", label: "Landing Pages" },
+              { value: 2, suffix: "",  label: "Countries"     },
+            ].map(({ value, suffix, label }) => (
+              <div key={label} className="flex flex-col items-center gap-1.5">
                 <span
-                  key={c.name}
-                  className="text-xs px-3 py-1.5 rounded-full"
-                  style={{
-                    border: "1px solid var(--dg-border)",
-                    color: "var(--dg-text-3)",
-                    background: "rgba(255,255,255,0.025)",
-                  }}
+                  className="text-3xl sm:text-4xl font-bold font-display tabular-nums leading-none"
+                  style={{ color: "var(--dg-text-1)" }}
                 >
-                  {c.name}
+                  <CountUp to={value} />
+                  <span style={{ color: "var(--dg-accent)" }}>{suffix}</span>
                 </span>
-              ))}
-            </div>
-            <span className="text-xs" style={{ color: "var(--dg-text-3)" }}>
-              and growing
-            </span>
+                <span className="text-xs tracking-wide" style={{ color: "var(--dg-text-3)" }}>
+                  {label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -1151,15 +1179,6 @@ export default function Home() {
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--dg-text-3)")}
               >
                 hidalgodanlevy@gmail.com
-              </a>
-              <a
-                href="tel:+50364247347"
-                className="text-xs transition-colors duration-200"
-                style={{ color: "var(--dg-text-3)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--dg-text-2)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--dg-text-3)")}
-              >
-                +503 6424-7347
               </a>
             </div>
           </div>

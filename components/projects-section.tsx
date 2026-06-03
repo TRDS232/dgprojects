@@ -13,6 +13,7 @@ interface Project {
   result: string
   tags: string[]
   year: string
+  accent?: string
 }
 
 const PROJECTS: Project[] = [
@@ -27,6 +28,7 @@ const PROJECTS: Project[] = [
     result: "Modern bilingual website with WhatsApp integration, enabling direct client contact and improving lead generation.",
     tags: ["Web Design", "WhatsApp API", "Responsive", "SEO"],
     year: "2025",
+    accent: "rgba(59,130,246,0.18)",
   },
   {
     href: "https://www.vidental.sv/",
@@ -39,6 +41,7 @@ const PROJECTS: Project[] = [
     result: "Premium website with specialist service pages, appointment flow, and medical-tourism section — significantly improving online patient acquisition.",
     tags: ["Web Design", "WhatsApp API", "Responsive", "SEO"],
     year: "2025",
+    accent: "rgba(20,184,166,0.18)",
   },
   {
     href: "https://www.tudentistasv.com/",
@@ -51,6 +54,46 @@ const PROJECTS: Project[] = [
     result: "Clean, conversion-focused website live and ready to generate new patient inquiries from day one.",
     tags: ["Web Design", "Responsive", "SEO", "Bilingual"],
     year: "2026",
+    accent: "rgba(139,92,246,0.18)",
+  },
+  {
+    href: "https://www.somosmezal.com/",
+    title: "Somos Mezal",
+    subtitle: "Brand & Digital Presence",
+    sector: "Brand",
+    description:
+      "Brand website for Somos Mezal, designed to communicate the brand identity, showcase products, and connect with their audience online — combining visual storytelling with a clean, conversion-focused structure.",
+    challenge: "Build a digital home that authentically represents the brand and creates a memorable first impression for new customers.",
+    result: "Visually compelling brand website that reflects the brand's identity and gives the business a credible platform to grow from.",
+    tags: ["Web Design", "Branding", "Responsive", "SEO"],
+    year: "2026",
+    accent: "rgba(234,179,8,0.18)",
+  },
+  {
+    href: "https://international.vidental.sv/",
+    title: "VIDENTAL International",
+    subtitle: "Medical Tourism Landing Page",
+    sector: "Landing Page",
+    description:
+      "Dedicated English-language landing page targeting international patients seeking premium dental care in El Salvador. Focused on communicating quality, safety, and the value of dental tourism to a global audience.",
+    challenge: "Convert international visitors into booked appointments by clearly positioning Vidental as a world-class clinic at a fraction of US/European prices.",
+    result: "High-converting bilingual landing page with a direct appointment flow, built specifically to capture international medical tourism traffic.",
+    tags: ["Landing Page", "Bilingual", "SEO", "Conversion"],
+    year: "2025",
+    accent: "rgba(20,184,166,0.14)",
+  },
+  {
+    href: "https://catalogo.somosmezal.com/",
+    title: "Catálogo Somos Mezal",
+    subtitle: "Product Catalog",
+    sector: "Landing Page",
+    description:
+      "Product catalog landing page for Somos Mezal, presenting the full product line in a clean, visual format optimized for browsing and direct orders — designed for a mobile-first audience.",
+    challenge: "Make it easy for customers to discover, explore, and order products with as little friction as possible.",
+    result: "Clean catalog page with clear product presentation and a direct ordering flow, ready to drive sales from day one.",
+    tags: ["Landing Page", "Catalog", "Responsive", "Conversion"],
+    year: "2026",
+    accent: "rgba(234,179,8,0.14)",
   },
 ]
 
@@ -66,10 +109,7 @@ export default function ProjectsSection({ onContact }: Props) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6 reveal-block">
           <div>
-            <p
-              className="text-xs tracking-[0.28em] uppercase mb-4"
-              style={{ color: "var(--dg-accent)" }}
-            >
+            <p className="text-xs tracking-[0.28em] uppercase mb-4" style={{ color: "var(--dg-accent)" }}>
               Client work
             </p>
             <h2
@@ -118,6 +158,71 @@ export default function ProjectsSection({ onContact }: Props) {
         )}
       </div>
     </section>
+  )
+}
+
+function BrowserMock({ project }: { project: Project }) {
+  const domain = project.href.replace("https://", "").replace("www.", "").replace(/\/$/, "")
+  const accentColor = project.accent ?? "rgba(199,42,42,0.12)"
+
+  return (
+    <div
+      className="relative w-full rounded-xl overflow-hidden mb-6 group-hover:opacity-95 transition-opacity"
+      style={{
+        height: "164px",
+        background: `linear-gradient(140deg, ${accentColor} 0%, rgba(7,7,14,0.95) 100%)`,
+        border: "1px solid var(--dg-border)",
+      }}
+    >
+      {/* Chrome bar */}
+      <div
+        className="absolute top-0 left-0 right-0 h-7 flex items-center gap-1.5 px-3"
+        style={{ background: "rgba(0,0,0,0.35)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+      >
+        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#ff5f57" }} />
+        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#febc2e" }} />
+        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#28c840" }} />
+        <div
+          className="flex-1 mx-2 h-4 rounded-md flex items-center px-2"
+          style={{ background: "rgba(255,255,255,0.07)" }}
+        >
+          <span className="text-[9px] truncate font-mono" style={{ color: "rgba(255,255,255,0.3)" }}>
+            {domain}
+          </span>
+        </div>
+      </div>
+
+      {/* Skeleton content */}
+      <div className="absolute inset-0 flex flex-col gap-2.5 px-5 py-4" style={{ paddingTop: "40px" }}>
+        {/* Hero skeleton */}
+        <div className="flex flex-col gap-1.5">
+          <div className="h-3 rounded-sm" style={{ background: "rgba(255,255,255,0.06)", width: "55%" }} />
+          <div className="h-2 rounded-sm" style={{ background: "rgba(255,255,255,0.04)", width: "75%" }} />
+          <div className="h-2 rounded-sm" style={{ background: "rgba(255,255,255,0.03)", width: "65%" }} />
+        </div>
+        {/* CTA skeleton */}
+        <div className="flex gap-2 mt-1">
+          <div
+            className="h-5 w-18 rounded-md"
+            style={{ background: accentColor, width: "72px", border: "1px solid rgba(255,255,255,0.06)" }}
+          />
+          <div
+            className="h-5 w-14 rounded-md"
+            style={{ background: "rgba(255,255,255,0.04)", width: "56px" }}
+          />
+        </div>
+        {/* Card row skeleton */}
+        <div className="flex gap-2 mt-auto">
+          {[62, 48, 54].map((w, i) => (
+            <div
+              key={i}
+              className="h-12 rounded-lg flex-shrink-0"
+              style={{ background: "rgba(255,255,255,0.03)", width: `${w}px`, border: "1px solid rgba(255,255,255,0.04)" }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -213,6 +318,9 @@ function TiltCard({ project, index }: { project: Project; index: number }) {
         />
 
         <div className="p-7 sm:p-10">
+          {/* Browser mock screenshot */}
+          <BrowserMock project={project} />
+
           {/* Sector tag + year */}
           <div className="flex items-center justify-between mb-5">
             <span
@@ -245,19 +353,13 @@ function TiltCard({ project, index }: { project: Project; index: number }) {
             </div>
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-1 transition-all duration-300 group-hover:scale-110"
-              style={{
-                border: "1px solid var(--dg-border)",
-                color: "var(--dg-text-3)",
-              }}
+              style={{ border: "1px solid var(--dg-border)", color: "var(--dg-text-3)" }}
             >
               <ArrowUpRight className="w-4 h-4" />
             </div>
           </div>
 
-          <p
-            className="text-sm leading-relaxed mb-6 max-w-2xl"
-            style={{ color: "var(--dg-text-2)" }}
-          >
+          <p className="text-sm leading-relaxed mb-6 max-w-2xl" style={{ color: "var(--dg-text-2)" }}>
             {project.description}
           </p>
 
@@ -276,10 +378,7 @@ function TiltCard({ project, index }: { project: Project; index: number }) {
             </div>
             <div
               className="rounded-xl p-4"
-              style={{
-                background: "var(--dg-accent-dim)",
-                border: "1px solid rgba(199,42,42,0.20)",
-              }}
+              style={{ background: "var(--dg-accent-dim)", border: "1px solid rgba(199,42,42,0.20)" }}
             >
               <p className="text-xs tracking-wide uppercase mb-2" style={{ color: "var(--dg-accent)" }}>
                 Result
@@ -295,7 +394,7 @@ function TiltCard({ project, index }: { project: Project; index: number }) {
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 text-xs rounded-full transition-colors duration-300"
+                className="px-3 py-1 text-xs rounded-full"
                 style={{
                   border: "1px solid var(--dg-border)",
                   color: "var(--dg-text-3)",

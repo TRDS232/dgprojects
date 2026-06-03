@@ -145,6 +145,17 @@ body {
   border-bottom-color: var(--dg-border-hover);
 }
 
+/* ── Form inputs ────────────────────────────────── */
+input::placeholder,
+textarea::placeholder {
+  color: var(--dg-text-3);
+}
+
+select option {
+  background: var(--dg-bg);
+  color: var(--dg-text-1);
+}
+
 /* ── Plan card ──────────────────────────────────── */
 .plan-card {
   border: 1px solid var(--dg-border);
