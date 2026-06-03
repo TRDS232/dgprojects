@@ -960,7 +960,7 @@ export default function Home() {
               >
                 <p className="text-xs tracking-[0.2em] uppercase mb-5" style={{ color: "var(--dg-text-3)" }}>Essential</p>
                 <div className="mb-1">
-                  <span className="text-4xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>$49</span>
+                  <span className="text-4xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>$49.99</span>
                   <span className="text-sm ml-1" style={{ color: "var(--dg-text-3)" }}>/month</span>
                 </div>
                 <p className="text-sm mb-6 mt-2 leading-relaxed" style={{ color: "var(--dg-text-2)" }}>
