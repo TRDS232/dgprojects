@@ -2,175 +2,23 @@
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import Image from "next/image"
-import MouseSpotlight from "@/components/mouse-spotlight"
 import ContactModal from "@/components/contact-modal"
 import ProjectsSection from "@/components/projects-section"
+import LanguageSwitcher from "@/components/language-switcher"
 import { useSmoothScroll } from "@/hooks/use-lenis"
+import { useLanguage } from "@/lib/i18n/context"
 import { ArrowRight, Check, ChevronRight, Globe, Search, Shield, BarChart2, Lightbulb, FileSearch, Menu, X } from "lucide-react"
 
-/* ── Data ──────────────────────────────────────────────────────────── */
-
-const SERVICES = [
-  {
-    num: "01",
-    icon: <Globe className="w-5 h-5" />,
-    title: "Web Design & Development",
-    outcome: "A website that works as hard as you do.",
-    description:
-      "We build modern, fast, conversion-focused websites that turn visitors into customers. Every project starts with your business goals, not a template.",
-    tags: ["Corporate websites", "Landing pages", "E-commerce", "Custom web apps"],
-  },
-  {
-    num: "02",
-    icon: <Search className="w-5 h-5" />,
-    title: "SEO & Search Visibility",
-    outcome: "Get found by customers actively searching for your services.",
-    description:
-      "We implement technical and on-page SEO so your business ranks on Google. More visibility means more qualified traffic — and more sales.",
-    tags: ["Technical SEO", "Keyword research", "Google Search Console", "Core Web Vitals"],
-  },
-  {
-    num: "03",
-    icon: <Shield className="w-5 h-5" />,
-    title: "Website Maintenance & Growth",
-    outcome: "Your website, always up-to-date and performing.",
-    description:
-      "We handle monthly updates, security monitoring, performance optimization, and content changes so you can focus on running your business.",
-    tags: ["Monthly updates", "Security monitoring", "Performance reports", "Content changes"],
-  },
-  {
-    num: "04",
-    icon: <BarChart2 className="w-5 h-5" />,
-    title: "Digital Presence Management",
-    outcome: "Dominate your local market online.",
-    description:
-      "We optimize your Google Business Profile, ensure brand consistency across all platforms, and continuously improve your online presence to generate more leads.",
-    tags: ["Google Business", "Local SEO", "UX audits", "Lead generation"],
-  },
-  {
-    num: "05",
-    icon: <Lightbulb className="w-5 h-5" />,
-    title: "Branding & Digital Strategy",
-    outcome: "A clear roadmap for your digital future.",
-    description:
-      "Not sure where to start? We help you define your positioning, build a digital strategy, and create a growth roadmap that makes every investment count.",
-    tags: ["Digital consulting", "Brand positioning", "Website strategy", "Growth roadmap"],
-  },
-  {
-    num: "06",
-    icon: <FileSearch className="w-5 h-5" />,
-    title: "Website Audit",
-    outcome: "Find out exactly what's holding your website back.",
-    description:
-      "We perform a full technical and strategic review of your existing website: SEO health, page speed, Google rankings, user experience, and conversion barriers. You get a clear, prioritized action plan.",
-    tags: ["Technical SEO audit", "Core Web Vitals", "Google ranking review", "UX analysis", "Competitor benchmarking"],
-  },
-]
-
-const WHY_ITEMS = [
-  {
-    num: "01",
-    title: "Fast delivery",
-    body: "Most websites go live in 2–4 weeks. We don't keep you waiting while your competitors gain ground.",
-  },
-  {
-    num: "02",
-    title: "SEO-first approach",
-    body: "Every website we build is optimized for search engines from day one — not as an afterthought.",
-  },
-  {
-    num: "03",
-    title: "Modern technology",
-    body: "We build with Next.js and performance-first practices. Your site will load fast and rank better.",
-  },
-  {
-    num: "04",
-    title: "Business-oriented results",
-    body: "We speak your language: more customers, more sales, more growth. No technical jargon.",
-  },
-  {
-    num: "05",
-    title: "Ongoing support",
-    body: "We don't disappear after launch. Every client gets continued support and regular optimization.",
-  },
-  {
-    num: "06",
-    title: "Transparent process",
-    body: "You always know what we're working on, what's next, and why. No surprises, no hidden costs.",
-  },
-]
-
-const PROCESS_STEPS = [
-  { num: "01", title: "Discovery", body: "We learn your business, your customers, and your goals." },
-  { num: "02", title: "Strategy", body: "We plan the site architecture and SEO foundation." },
-  { num: "03", title: "Design", body: "We craft the visual identity and user experience." },
-  { num: "04", title: "Development", body: "We build with modern, fast, accessible technology." },
-  { num: "05", title: "Launch", body: "We deploy with thorough testing and performance checks." },
-  { num: "06", title: "Growth", body: "We monitor, optimize, and help your site keep growing." },
-]
-
-const PLANS_CREATION = [
-  {
-    name: "Landing Page",
-    price: "$150",
-    description: "One professional page to establish your online presence and capture leads.",
-    tags: ["1-page responsive design", "Basic SEO setup", "WhatsApp / contact button", "Delivery in ~1 week"],
-  },
-  {
-    name: "Business Website",
-    price: "From $350",
-    description: "Full multi-page corporate site, built to rank on Google and turn visitors into customers.",
-    tags: ["Up to 6 pages", "Full on-page SEO", "Google Analytics & Search Console", "Delivery in 2–3 weeks"],
-    featured: true,
-  },
-  {
-    name: "Custom Project",
-    price: "Contact us",
-    description: "E-commerce, web applications, or complex projects with advanced features.",
-    tags: ["E-commerce / web app", "API integrations", "Advanced SEO strategy", "Post-launch support"],
-  },
-]
-
-const PLANS_MAINTENANCE = [
-  {
-    name: "Essential",
-    price: "$49.99",
-    description: "Keep your website healthy, secure, and always up to date.",
-    features: [
-      "Monthly content updates",
-      "Security monitoring",
-      "Uptime monitoring",
-      "Monthly performance report",
-      "Email support",
-    ],
-  },
-  {
-    name: "Growth",
-    price: "$99.99",
-    description: "Everything in Essential, plus active SEO work to keep climbing Google every month.",
-    features: [
-      "Everything in Essential",
-      "Monthly SEO improvements",
-      "Google Search Console management",
-      "Monthly analytics report",
-      "Minor design updates",
-      "Priority support",
-    ],
-  },
-  {
-    name: "Premium",
-    price: "Custom",
-    description: "Full ongoing partnership — strategy, design, SEO, and continuous optimization.",
-    features: [
-      "Everything in Growth",
-      "Monthly strategy session",
-      "Continuous UX optimization",
-      "Content creation support",
-      "Conversion rate improvements",
-      "Dedicated account manager",
-    ],
-  },
-]
+/* ── Icons are visual-only, keyed by service number so they stay paired
+     with the translated service content regardless of locale. ── */
+const SERVICE_ICONS: Record<string, React.ReactNode> = {
+  "01": <Globe className="w-5 h-5" />,
+  "02": <Search className="w-5 h-5" />,
+  "03": <Shield className="w-5 h-5" />,
+  "04": <BarChart2 className="w-5 h-5" />,
+  "05": <Lightbulb className="w-5 h-5" />,
+  "06": <FileSearch className="w-5 h-5" />,
+}
 
 /* ── Helpers ─────────────────────────────────────────────────────── */
 
@@ -209,6 +57,7 @@ function CountUp({ to, duration = 1000 }: { to: number; duration?: number }) {
 /* ── Page ──────────────────────────────────────────────────────────── */
 
 export default function Home() {
+  const { t } = useLanguage()
   const [activeSection, setActiveSection] = useState("home")
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -271,15 +120,14 @@ export default function Home() {
   }, [])
 
   const navItems = [
-    { id: "services", label: "Services" },
-    { id: "why",      label: "Why us"  },
-    { id: "process",  label: "Process" },
-    { id: "plans",    label: "Plans"   },
+    { id: "services", label: t.nav.services },
+    { id: "why",      label: t.nav.why      },
+    { id: "process",  label: t.nav.process  },
+    { id: "plans",    label: t.nav.plans    },
   ]
 
   return (
     <main className="min-h-screen overflow-x-hidden" style={{ background: "var(--dg-bg)", color: "var(--dg-text-1)" }}>
-      <MouseSpotlight />
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
 
       {/* ── Fixed hero glow ── */}
@@ -305,7 +153,7 @@ export default function Home() {
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 h-16">
           {/* Logo */}
-          <button onClick={() => goto("home")} className="flex items-center gap-2.5 group" aria-label="DG Projects home">
+          <button onClick={() => goto("home")} className="flex items-center gap-2.5 group" aria-label={t.nav.home}>
             <Image
               src="/images/2.png"
               alt="DG Projects"
@@ -339,22 +187,25 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <button
-            onClick={openContact}
-            className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 hover:opacity-90 active:scale-95"
-            style={{ background: "var(--dg-accent)", color: "#fff" }}
-          >
-            Get started
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          {/* Desktop CTA + language switcher */}
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
+            <button
+              onClick={openContact}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 hover:opacity-90 active:scale-95"
+              style={{ background: "var(--dg-accent)", color: "#fff" }}
+            >
+              {t.nav.getStarted}
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
           {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 rounded-lg transition-colors"
             style={{ color: "var(--dg-text-2)" }}
             onClick={() => setMenuOpen((p) => !p)}
-            aria-label="Toggle menu"
+            aria-label={t.nav.toggleMenu}
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -376,12 +227,15 @@ export default function Home() {
                 {label}
               </button>
             ))}
+            <div className="flex items-center justify-between mt-1 px-1">
+              <LanguageSwitcher />
+            </div>
             <button
               onClick={openContact}
               className="mt-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-white"
               style={{ background: "var(--dg-accent)" }}
             >
-              Get started
+              {t.nav.getStarted}
             </button>
           </div>
         )}
@@ -401,7 +255,7 @@ export default function Home() {
             className="hero-line text-xs tracking-[0.28em] uppercase"
             style={{ animationDelay: "0.1s", color: "var(--dg-accent)" }}
           >
-            Digital Growth Agency
+            {t.hero.eyebrow}
           </p>
 
           {/* Headline */}
@@ -413,8 +267,8 @@ export default function Home() {
               color: "var(--dg-text-1)",
             }}
           >
-            We build websites that<br />
-            <span style={{ color: "var(--dg-accent)" }}>generate real results.</span>
+            {t.hero.headlinePrefix}<br />
+            <span style={{ color: "var(--dg-accent)" }}>{t.hero.headlineAccent}</span>
           </h1>
 
           {/* Sub */}
@@ -422,8 +276,8 @@ export default function Home() {
             className="hero-line text-lg sm:text-xl max-w-xl leading-relaxed"
             style={{ animationDelay: "0.4s", color: "var(--dg-text-2)" }}
           >
-            More visibility. More leads. More sales.<br />
-            Full-service digital agency for businesses serious about growing online.
+            {t.hero.subLine1}<br />
+            {t.hero.subLine2}
           </p>
 
           {/* CTAs */}
@@ -436,7 +290,7 @@ export default function Home() {
               className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-all duration-200 hover:opacity-90 active:scale-95"
               style={{ background: "var(--dg-accent)" }}
             >
-              Start your project
+              {t.hero.ctaPrimary}
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
@@ -452,7 +306,7 @@ export default function Home() {
                 e.currentTarget.style.color = "var(--dg-text-2)"
               }}
             >
-              View our work
+              {t.hero.ctaSecondary}
             </button>
           </div>
 
@@ -461,11 +315,7 @@ export default function Home() {
             className="hero-line flex items-center justify-center gap-10 sm:gap-16"
             style={{ animationDelay: "0.7s" }}
           >
-            {[
-              { value: 4, suffix: "+", label: "Web Projects"  },
-              { value: 3, suffix: "+", label: "Landing Pages" },
-              { value: 2, suffix: "",  label: "Countries"     },
-            ].map(({ value, suffix, label }) => (
+            {t.hero.metrics.map(({ value, suffix, label }) => (
               <div key={label} className="flex flex-col items-center gap-1.5">
                 <span
                   className="text-3xl sm:text-4xl font-bold font-display tabular-nums leading-none"
@@ -485,11 +335,11 @@ export default function Home() {
         {/* Scroll cue */}
         <button
           onClick={() => goto("services")}
-          aria-label="Scroll to services"
+          aria-label={t.hero.scroll}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-40 hover:opacity-80 transition-opacity"
         >
           <span className="text-[9px] tracking-[0.35em] uppercase" style={{ color: "var(--dg-text-3)" }}>
-            Scroll
+            {t.hero.scroll}
           </span>
           <span
             className="w-px h-9 scroll-line"
@@ -506,7 +356,7 @@ export default function Home() {
         style={{ borderTop: "1px solid var(--dg-border)", borderBottom: "1px solid var(--dg-border)" }}
       >
         <div className="marquee-track flex items-center gap-16 whitespace-nowrap">
-          {(["Web Design & Development","SEO & Search Visibility","Website Maintenance","Digital Presence Management","Branding & Strategy"] as const)
+          {t.marquee
             .flatMap((label, li) =>
               [0, 1, 2, 3].map((ri) => (
                 <span key={`${li}-${ri}`} className="flex items-center gap-3 text-sm" style={{ color: "var(--dg-text-3)" }}>
@@ -526,24 +376,24 @@ export default function Home() {
 
           <div className="mb-16 reveal-block">
             <p className="text-xs tracking-[0.28em] uppercase mb-4" style={{ color: "var(--dg-accent)" }}>
-              What we do
+              {t.servicesSection.eyebrow}
             </p>
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <h2
                 className="font-display font-bold leading-tight"
                 style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", color: "var(--dg-text-1)" }}
               >
-                Services built<br className="hidden sm:block" /> for business growth.
+                {t.servicesSection.titleLine1}<br className="hidden sm:block" /> {t.servicesSection.titleLine2}
               </h2>
               <p className="text-sm max-w-xs" style={{ color: "var(--dg-text-2)", lineHeight: 1.7 }}>
-                Every service is designed to directly impact your visibility, leads, and revenue.
+                {t.servicesSection.sub}
               </p>
             </div>
           </div>
 
           {/* Service rows */}
           <div>
-            {SERVICES.map((s, i) => (
+            {t.services.map((s, i) => (
               <div
                 key={s.num}
                 className="service-row reveal-block"
@@ -568,7 +418,7 @@ export default function Home() {
                       className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 -mt-0.5"
                       style={{ background: "var(--dg-accent-dim)", color: "var(--dg-accent)" }}
                     >
-                      {s.icon}
+                      {SERVICE_ICONS[s.num]}
                     </span>
 
                     {/* Content */}
@@ -637,7 +487,7 @@ export default function Home() {
               className="flex items-center gap-2 text-sm font-semibold transition-colors duration-200 group"
               style={{ color: "var(--dg-accent)" }}
             >
-              Discuss your project
+              {t.servicesSection.discuss}
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </button>
           </div>
@@ -654,26 +504,26 @@ export default function Home() {
             {/* Left: statement */}
             <div className="reveal-block">
               <p className="text-xs tracking-[0.28em] uppercase mb-4" style={{ color: "var(--dg-accent)" }}>
-                Why DG Projects
+                {t.whySection.eyebrow}
               </p>
               <h2
                 className="font-display font-bold leading-tight mb-6"
                 style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", color: "var(--dg-text-1)" }}
               >
-                We treat your business<br className="hidden sm:block" /> like our own.
+                {t.whySection.titleLine1}<br className="hidden sm:block" /> {t.whySection.titleLine2}
               </h2>
               <p
                 className="text-base leading-relaxed mb-8 max-w-md"
                 style={{ color: "var(--dg-text-2)" }}
               >
-                Most agencies build your website and disappear. We build a long-term partnership, continuously improving your online presence and helping your business grow month after month.
+                {t.whySection.body}
               </p>
               <button
                 onClick={openContact}
                 className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
                 style={{ background: "var(--dg-accent)" }}
               >
-                Book a free consultation
+                {t.whySection.cta}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -681,7 +531,7 @@ export default function Home() {
             {/* Right: differentiators grid */}
             <div className="rounded-2xl overflow-hidden reveal-block" style={{ transitionDelay: "100ms", background: "var(--dg-border)" }}>
               <div className="grid sm:grid-cols-2 gap-px">
-                {WHY_ITEMS.map((item) => (
+                {t.whyItems.map((item) => (
                   <div
                     key={item.num}
                     className="p-6"
@@ -718,19 +568,19 @@ export default function Home() {
 
           <div className="text-center mb-16 reveal-block">
             <p className="text-xs tracking-[0.28em] uppercase mb-4" style={{ color: "var(--dg-accent)" }}>
-              How we work
+              {t.processSection.eyebrow}
             </p>
             <h2
               className="font-display font-bold"
               style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", color: "var(--dg-text-1)" }}
             >
-              From first call to lasting growth.
+              {t.processSection.title}
             </h2>
           </div>
 
           <div className="rounded-2xl overflow-hidden" style={{ background: "var(--dg-border)" }}>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px">
-              {PROCESS_STEPS.map((step, i) => (
+              {t.processSteps.map((step, i) => (
                 <div
                   key={step.num}
                   className="reveal-block p-6 flex flex-col gap-3"
@@ -775,17 +625,17 @@ export default function Home() {
           {/* Header */}
           <div className="mb-16 reveal-block">
             <p className="text-xs tracking-[0.28em] uppercase mb-4" style={{ color: "var(--dg-accent)" }}>
-              Plans & packages
+              {t.plansSection.eyebrow}
             </p>
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <h2
                 className="font-display font-bold leading-tight"
                 style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", color: "var(--dg-text-1)" }}
               >
-                Transparent pricing,<br className="hidden sm:block" /> real results.
+                {t.plansSection.titleLine1}<br className="hidden sm:block" /> {t.plansSection.titleLine2}
               </h2>
               <p className="text-sm max-w-xs" style={{ color: "var(--dg-text-2)", lineHeight: 1.7 }}>
-                Whether you need a new website or ongoing support for an existing one, there's a plan for you.
+                {t.plansSection.sub}
               </p>
             </div>
           </div>
@@ -806,26 +656,26 @@ export default function Home() {
                 <div>
                   <div className="flex flex-wrap items-center gap-3 mb-2">
                     <h3 className="text-lg font-bold font-display" style={{ color: "var(--dg-text-1)" }}>
-                      Website Audit
+                      {t.audit.title}
                     </h3>
                     <span
                       className="text-xs px-2.5 py-1 rounded-full font-semibold tracking-wide"
                       style={{ background: "var(--dg-accent)", color: "#fff" }}
                     >
-                      $125 · One-time
+                      {t.audit.badge}
                     </span>
                   </div>
                   <p className="text-sm leading-relaxed max-w-xl mb-4" style={{ color: "var(--dg-text-2)" }}>
-                    Already have a website but not seeing results? We do a full technical and strategic review — SEO health, page speed, Google rankings, user experience, and competitor benchmarking — and deliver a clear, prioritized action plan.
+                    {t.audit.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {["Technical SEO", "Core Web Vitals", "Google ranking review", "UX analysis", "Detailed report"].map((t) => (
+                    {t.audit.tags.map((tg) => (
                       <span
-                        key={t}
+                        key={tg}
                         className="text-xs px-3 py-1 rounded-full"
                         style={{ border: "1px solid rgba(199,42,42,0.2)", color: "var(--dg-text-3)", background: "var(--dg-accent-dim)" }}
                       >
-                        {t}
+                        {tg}
                       </span>
                     ))}
                   </div>
@@ -836,7 +686,7 @@ export default function Home() {
                 className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap flex-shrink-0 transition-all duration-200 hover:opacity-90 active:scale-95"
                 style={{ background: "var(--dg-accent)", color: "#fff" }}
               >
-                Request audit
+                {t.audit.button}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -847,42 +697,38 @@ export default function Home() {
             <div className="flex items-center gap-4 mb-8 reveal-block">
               <div>
                 <p className="text-xs tracking-[0.25em] uppercase font-semibold mb-0.5" style={{ color: "var(--dg-text-1)" }}>
-                  Website Creation
+                  {t.creationGroup.label}
                 </p>
-                <p className="text-xs" style={{ color: "var(--dg-text-3)" }}>One-time project — get your website built and launched</p>
+                <p className="text-xs" style={{ color: "var(--dg-text-3)" }}>{t.creationGroup.sub}</p>
               </div>
               <div className="flex-1 h-px" style={{ background: "var(--dg-border)" }} />
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4">
-              {PLANS_CREATION.map((plan, i) => (
+              {t.plansCreation.map((plan, i) => (
                 <div
                   key={plan.name}
                   className={`reveal-block rounded-2xl p-7 flex flex-col transition-all duration-200 ${
-                    (plan as typeof plan & { featured?: boolean }).featured ? "plan-card-featured" : ""
+                    plan.featured ? "plan-card-featured" : ""
                   }`}
                   style={{
-                    border: (plan as typeof plan & { featured?: boolean }).featured
-                      ? undefined
-                      : "1px solid var(--dg-border)",
+                    border: plan.featured ? undefined : "1px solid var(--dg-border)",
                     background: "var(--dg-surface)",
                     transitionDelay: `${i * 70}ms`,
                   }}
                   onMouseEnter={(e) => {
-                    if (!(plan as typeof plan & { featured?: boolean }).featured)
-                      e.currentTarget.style.borderColor = "var(--dg-border-hover)"
+                    if (!plan.featured) e.currentTarget.style.borderColor = "var(--dg-border-hover)"
                   }}
                   onMouseLeave={(e) => {
-                    if (!(plan as typeof plan & { featured?: boolean }).featured)
-                      e.currentTarget.style.borderColor = "var(--dg-border)"
+                    if (!plan.featured) e.currentTarget.style.borderColor = "var(--dg-border)"
                   }}
                 >
-                  {(plan as typeof plan & { featured?: boolean }).featured && (
+                  {plan.featured && (
                     <span
                       className="text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 rounded-full self-start mb-4 font-semibold"
                       style={{ background: "var(--dg-accent-dim)", color: "var(--dg-accent)" }}
                     >
-                      Most requested
+                      {t.mostRequested}
                     </span>
                   )}
                   <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "var(--dg-text-3)" }}>
@@ -911,12 +757,12 @@ export default function Home() {
                     onClick={openContact}
                     className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95"
                     style={
-                      (plan as typeof plan & { featured?: boolean }).featured
+                      plan.featured
                         ? { background: "var(--dg-accent)", color: "#fff" }
                         : { border: "1px solid var(--dg-border)", color: "var(--dg-text-2)" }
                     }
                     onMouseEnter={(e) => {
-                      if (!(plan as typeof plan & { featured?: boolean }).featured) {
+                      if (!plan.featured) {
                         e.currentTarget.style.borderColor = "var(--dg-border-hover)"
                         e.currentTarget.style.color = "var(--dg-text-1)"
                       } else {
@@ -924,7 +770,7 @@ export default function Home() {
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (!(plan as typeof plan & { featured?: boolean }).featured) {
+                      if (!plan.featured) {
                         e.currentTarget.style.borderColor = "var(--dg-border)"
                         e.currentTarget.style.color = "var(--dg-text-2)"
                       } else {
@@ -932,7 +778,7 @@ export default function Home() {
                       }
                     }}
                   >
-                    Request quote
+                    {t.requestQuote}
                   </button>
                 </div>
               ))}
@@ -944,9 +790,9 @@ export default function Home() {
             <div className="flex items-center gap-4 mb-8 reveal-block">
               <div>
                 <p className="text-xs tracking-[0.25em] uppercase font-semibold mb-0.5" style={{ color: "var(--dg-text-1)" }}>
-                  Monthly Maintenance
+                  {t.maintenanceGroup.label}
                 </p>
-                <p className="text-xs" style={{ color: "var(--dg-text-3)" }}>Ongoing support to keep your site growing after launch</p>
+                <p className="text-xs" style={{ color: "var(--dg-text-3)" }}>{t.maintenanceGroup.sub}</p>
               </div>
               <div className="flex-1 h-px" style={{ background: "var(--dg-border)" }} />
             </div>
@@ -958,16 +804,16 @@ export default function Home() {
                 className="reveal-block plan-card rounded-2xl p-7 flex flex-col"
                 style={{ transitionDelay: "0ms" }}
               >
-                <p className="text-xs tracking-[0.2em] uppercase mb-5" style={{ color: "var(--dg-text-3)" }}>Essential</p>
+                <p className="text-xs tracking-[0.2em] uppercase mb-5" style={{ color: "var(--dg-text-3)" }}>{t.plansMaintenance[0].name}</p>
                 <div className="mb-1">
-                  <span className="text-4xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>$49.99</span>
-                  <span className="text-sm ml-1" style={{ color: "var(--dg-text-3)" }}>/month</span>
+                  <span className="text-4xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>{t.plansMaintenance[0].price}</span>
+                  <span className="text-sm ml-1" style={{ color: "var(--dg-text-3)" }}>{t.perMonth}</span>
                 </div>
                 <p className="text-sm mb-6 mt-2 leading-relaxed" style={{ color: "var(--dg-text-2)" }}>
-                  {PLANS_MAINTENANCE[0].description}
+                  {t.plansMaintenance[0].description}
                 </p>
                 <ul className="space-y-2.5 flex-1 mb-7">
-                  {PLANS_MAINTENANCE[0].features.map((f) => (
+                  {t.plansMaintenance[0].features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5">
                       <Check className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: "var(--dg-accent)" }} />
                       <span className="text-sm" style={{ color: "var(--dg-text-2)" }}>{f}</span>
@@ -981,7 +827,7 @@ export default function Home() {
                   onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--dg-border-hover)"; e.currentTarget.style.color = "var(--dg-text-1)" }}
                   onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--dg-border)"; e.currentTarget.style.color = "var(--dg-text-2)" }}
                 >
-                  Get started
+                  {t.getStartedBtn}
                 </button>
               </div>
 
@@ -994,19 +840,19 @@ export default function Home() {
                   className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.2em] uppercase px-3 py-1 rounded-full font-semibold whitespace-nowrap"
                   style={{ background: "var(--dg-accent)", color: "#fff" }}
                 >
-                  Most popular
+                  {t.mostPopular}
                 </span>
-                <p className="text-xs tracking-[0.2em] uppercase mb-5 mt-2" style={{ color: "var(--dg-accent)" }}>Growth</p>
+                <p className="text-xs tracking-[0.2em] uppercase mb-5 mt-2" style={{ color: "var(--dg-accent)" }}>{t.plansMaintenance[1].name}</p>
                 <div className="mb-1">
-                  <span className="text-5xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>$99</span>
-                  <span className="text-sm ml-1" style={{ color: "var(--dg-text-3)" }}>/month</span>
+                  <span className="text-5xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>{t.plansMaintenance[1].price.split(".")[0]}</span>
+                  <span className="text-sm ml-1" style={{ color: "var(--dg-text-3)" }}>{t.perMonth}</span>
                 </div>
                 <p className="text-sm mb-5 mt-2 leading-relaxed" style={{ color: "var(--dg-text-2)" }}>
-                  {PLANS_MAINTENANCE[1].description}
+                  {t.plansMaintenance[1].description}
                 </p>
                 <div className="w-full h-px mb-5" style={{ background: "rgba(199,42,42,0.2)" }} />
                 <ul className="space-y-2.5 flex-1 mb-8">
-                  {PLANS_MAINTENANCE[1].features.map((f) => (
+                  {t.plansMaintenance[1].features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5">
                       <Check className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: "var(--dg-accent)" }} />
                       <span className="text-sm" style={{ color: "var(--dg-text-2)" }}>{f}</span>
@@ -1018,7 +864,7 @@ export default function Home() {
                   className="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
                   style={{ background: "var(--dg-accent)", color: "#fff" }}
                 >
-                  Get started
+                  {t.getStartedBtn}
                 </button>
               </div>
 
@@ -1027,15 +873,15 @@ export default function Home() {
                 className="reveal-block plan-card rounded-2xl p-7 flex flex-col"
                 style={{ transitionDelay: "160ms" }}
               >
-                <p className="text-xs tracking-[0.2em] uppercase mb-5" style={{ color: "var(--dg-text-3)" }}>Premium</p>
+                <p className="text-xs tracking-[0.2em] uppercase mb-5" style={{ color: "var(--dg-text-3)" }}>{t.plansMaintenance[2].name}</p>
                 <div className="mb-1">
-                  <span className="text-4xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>Custom</span>
+                  <span className="text-4xl font-bold font-display" style={{ color: "var(--dg-text-1)" }}>{t.plansMaintenance[2].price}</span>
                 </div>
                 <p className="text-sm mb-6 mt-2 leading-relaxed" style={{ color: "var(--dg-text-2)" }}>
-                  {PLANS_MAINTENANCE[2].description}
+                  {t.plansMaintenance[2].description}
                 </p>
                 <ul className="space-y-2.5 flex-1 mb-7">
-                  {PLANS_MAINTENANCE[2].features.map((f) => (
+                  {t.plansMaintenance[2].features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5">
                       <Check className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: "var(--dg-accent)" }} />
                       <span className="text-sm" style={{ color: "var(--dg-text-2)" }}>{f}</span>
@@ -1049,7 +895,7 @@ export default function Home() {
                   onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--dg-border-hover)"; e.currentTarget.style.color = "var(--dg-text-1)" }}
                   onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--dg-border)"; e.currentTarget.style.color = "var(--dg-text-2)" }}
                 >
-                  Contact us
+                  {t.contactUsBtn}
                 </button>
               </div>
 
@@ -1085,16 +931,16 @@ export default function Home() {
             />
 
             <p className="text-xs tracking-[0.28em] uppercase mb-5" style={{ color: "var(--dg-accent)" }}>
-              Ready to grow?
+              {t.finalCta.eyebrow}
             </p>
             <h2
               className="font-display font-bold mb-5 max-w-xl mx-auto leading-tight"
               style={{ fontSize: "clamp(1.8rem, 4vw, 2.75rem)", color: "var(--dg-text-1)" }}
             >
-              Let's build your digital presence together.
+              {t.finalCta.title}
             </h2>
             <p className="text-base mb-10 max-w-sm mx-auto" style={{ color: "var(--dg-text-2)" }}>
-              Tell us about your business and we'll put together a plan to help you grow online.
+              {t.finalCta.body}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
@@ -1102,7 +948,7 @@ export default function Home() {
                 className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
                 style={{ background: "var(--dg-accent)" }}
               >
-                Book a free consultation
+                {t.finalCta.primary}
                 <ArrowRight className="w-4 h-4" />
               </button>
               <a
@@ -1148,13 +994,13 @@ export default function Home() {
                   DG Projects
                 </p>
                 <p className="text-xs" style={{ color: "var(--dg-text-3)" }}>
-                  Digital Growth Agency
+                  {t.footer.tagline}
                 </p>
               </div>
             </div>
 
             {/* Nav links */}
-            <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
               {navItems.map(({ id, label }) => (
                 <button
                   key={id}
@@ -1167,6 +1013,7 @@ export default function Home() {
                   {label}
                 </button>
               ))}
+              <LanguageSwitcher />
             </div>
 
             {/* Contact */}
@@ -1188,7 +1035,7 @@ export default function Home() {
             style={{ borderTop: "1px solid var(--dg-border)" }}
           >
             <p className="text-xs" style={{ color: "var(--dg-text-3)" }}>
-              © {new Date().getFullYear()} DG Projects. All rights reserved.
+              © {new Date().getFullYear()} DG Projects. {t.footer.rights}
             </p>
             <div className="flex items-center gap-5">
               <a

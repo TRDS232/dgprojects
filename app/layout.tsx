@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Open_Sans, Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { LanguageProvider } from "@/lib/i18n/context"
 import "./globals.css"
 
 const openSans = Open_Sans({
@@ -55,8 +56,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${openSans.variable} ${poppins.variable}`}>
       <body>
-        {children}
-        <Analytics />
+        <LanguageProvider>
+          {children}
+          <Analytics />
+        </LanguageProvider>
       </body>
     </html>
   )
